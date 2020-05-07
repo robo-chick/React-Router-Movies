@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
+import MovieCard from './MovieCard';
 import axios from 'axios';
-import { BrowserRouter as Router, useParams } from 'react-router-dom';
+
 
 const Movie = (props) => {
   const [movie, setMovie] = useState();
-  const {id} = useParams();
+  const id = props.id;
  
   useEffect(() => {
     
@@ -17,44 +18,35 @@ const Movie = (props) => {
           setMovie(response.data);
         })
         .catch(error => {
-          console.log(error);
+          console.error(error);
         });
-
   },[id]);
   
   // Uncomment this only when you have moved on to the stretch goals
   const saveMovie = () => {
     const addToSavedList = props.addToSavedList;
-    addToSavedList(movie)
-    console.log(props);
-  }
+    addToSavedList(movie);
+    // console.log(props);
+  };
 
   if (!movie) {
     return <div>Loading movie information...</div>;
   }
 
-  const { title, director, metascore, stars } = movie;
+  const { title, director, metascore, stars, addToSavedList } = movie;
   return (
     <div className="save-wrapper">
-      <div className="movie-card">
-        <h2>{title}</h2>
-        <div className="movie-director">
-          Director: <em>{director}</em>
-        </div>
-        <div className="movie-metascore">
-          Metascore: <strong>{metascore}</strong>
-        </div>
-        <h3>Actors</h3>
-
-        {stars.map(star => (
-          <div key={star} className="movie-star">
-            {star}
-          </div>
-        ))}
-      </div>
-      <div onClick={() => saveMovie()}className="save-button">Save</div>
+      <MovieCard
+      key={id}
+      title={title}
+      director={director}
+      metascore={metascore}
+      stars={stars}
+      addToSavedList={addToSavedList}
+      />
+      <div className="save-button" onClick={saveMovie}>Save</div>
     </div>
-  );
+      );
 }
 
 export default Movie;
